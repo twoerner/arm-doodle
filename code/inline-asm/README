@@ -1,0 +1,5 @@
+This is not my work, I came across it at:
+http://balau82.wordpress.com/2011/05/17/inline-assembly-instructions-in-gcc/
+
+$ make
+$ qemu-arm -cpu cortex-a8 asm_test
