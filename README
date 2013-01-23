@@ -1,0 +1,10 @@
+This repository contains a bunch of my ARM doodles. In other words, if I read
+something interesting or want to try out something related to ARM this is
+where I'll put it.
+
+On my actual checkout I have a directory called 'local' under which is a
+directory called 'packages'. In packages I have unpacked a number of different
+Mentor/Code Sourcery "lite" toolchains. I determine which of the toolchains is
+currently in use by using 'stow' to populate the 'local' directory with the
+chosen toolchain's contents. So as long as my environment points to the
+'local/bin' directory I'll be using the current toolchain.
