@@ -1,0 +1,8 @@
+flash.bin
+startup.o
+test.bin
+test.dis
+test.elf
+test.o
+test.uimg
+u-boot.bin

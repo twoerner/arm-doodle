@@ -1,0 +1,87 @@
+i just wanted to play around with something i found on the web:
+http://balau82.wordpress.com/2010/03/10/u-boot-for-arm-on-qemu/
+
+<obtain u-boot source>
+$ cd <u-boot source checkout>
+$ make versatileqemu_config ARCH=arm CROSS_COMPILE=arm-none-linux-gnueabi-
+
+the different things you can specify for *_config in the previous command
+come from the "boards.cfg" file in the top-level directory of the u-boot
+sources
+
+$ make all ARCH=arm CROSS_COMPILE=arm-none-linux-gnueabi-
+$ qemu-system-arm -M versatilepb -m 128M -nographic -kernel u-boot.bin
+
+
+U-Boot 2013.01-00009-g54b08ef (Jan 24 2013 - 14:18:47)
+
+DRAM:  128 MiB
+WARNING: Caches not enabled
+Using default environment
+
+In:    serial
+Out:   serial
+Err:   serial
+Net:   SMC91111-0
+Warning: SMC91111-0 using MAC address from net device
+
+VersatilePB #
+
+
+
+NOTE: mkimage can be found under the tools directory of the u-boot sources
+
+$ make
+$ <u-boot source>/tools/mkimage -A arm -C none -O linux -T kernel -d test.bin -a 0x00100000 -e 0x00100000 test.uimg
+Image Name:   
+Created:      Thu Jan 24 14:39:07 2013
+Image Type:   ARM Linux Kernel Image (uncompressed)
+Data Size:    220 Bytes = 0.21 kB = 0.00 MB
+Load Address: 00100000
+Entry Point:  00100000
+
+$ cat u-boot.bin test.uimg > flash.bin
+$ printf "bootm 0x%X\n" $(expr $(stat -c%s u-boot.bin) + 65536)
+bootm 0x2B588
+$ qemu-system-arm -M versatilepb -m 128M -nographic -kernel flash.bin
+
+
+U-Boot 2013.01-00009-g54b08ef (Jan 24 2013 - 14:18:47)
+
+DRAM:  128 MiB
+WARNING: Caches not enabled
+Using default environment
+
+In:    serial
+Out:   serial
+Err:   serial
+Net:   SMC91111-0
+Warning: SMC91111-0 using MAC address from net device
+
+VersatilePB #
+
+
+VersatilePB # iminfo 0x2b588
+
+## Checking Image at 0002b588 ...
+   Legacy image found
+   Image Name:   
+   Image Type:   ARM Linux Kernel Image (uncompressed)
+   Data Size:    220 Bytes = 220 Bytes
+   Load Address: 00100000
+   Entry Point:  00100000
+   Verifying Checksum ... OK
+
+VersatilePB # bootm 0x2b588
+## Booting kernel from Legacy Image at 0002b588 ...
+   Image Name:   
+   Image Type:   ARM Linux Kernel Image (uncompressed)
+   Data Size:    220 Bytes = 220 Bytes
+   Load Address: 00100000
+   Entry Point:  00100000
+   Loading Kernel Image ... OK
+OK
+
+Starting kernel ...
+
+Hello world!
