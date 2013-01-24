@@ -1,0 +1,7 @@
+this is not my work
+i just wanted to play around with something i found on the web:
+http://balau82.wordpress.com/2010/02/28/hello-world-for-bare-metal-arm-using-qemu/
+
+$ make
+$ qemu-system-arm -M versatilepb -m 128M -nographic -kernel test.bin
+[Ctrl-a + x]

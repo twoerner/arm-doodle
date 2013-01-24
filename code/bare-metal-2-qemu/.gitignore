@@ -1,0 +1,5 @@
+startup.o
+test.bin
+test.dis
+test.elf
+test.o
