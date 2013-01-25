@@ -1,0 +1,38 @@
+this investigation comes from:
+http://balau82.wordpress.com/2010/03/22/compiling-linux-kernel-for-qemu-arm-emulator/
+
+Oddly enough the 2012.09 version of the mentor arm toolchain is not able to
+compile the linux-2.6.33 kernel. Both the 2012.03 and a toolchain created with
+CT-NG 1.17.0 work fine.
+
+For this work I used the ct-ng toolchain.
+
+NOTE: if you want to use a toolchain you have compiled yourself with the help
+      of CT-NG, just make sure you select a toolchain kernel (headers) that
+      is the same or less than the version of the kernel being used; in this
+      case we're using the 2.6.33 kernel, so I selected 2.6.27.62 for CT-NG.
+
+      if you don't make this change and you just go with the default (which
+      for ctng-1.17.0 is linux-3.6.3) then the executable you compile will
+      not be able to run in your vm
+
+i have supplied a small-ish config for this demonstration in kconfig
+$ cp kconfig <kernel source dir for 2.6.33>/.config
+$ cd <kernel source dir for 2.6.33>
+$ make ARCH=arm CROSS_COMPILE=arm-unknown-linux-gnueabi-
+$ cp arch/arm/boot/zImage <this directory>
+
+$ cd <this directory>
+$ make
+
+
+NOTE: The initial instructions suggest creating a static executable called
+      'test' and then invoking test in the initrd by using a kernel cmdline
+      string which includes 'rdinit=/test'. However, if, instead of naming
+      the executable 'test' we name it 'init', no such cmdline is required.
+      In other words, the kernel already knows to look in the root directory
+      for files with names like 'init', 'linuxrc', etc. So if we name our
+      executable one of those names, we won't have to supply the name
+      explicitly.
+
+$ qemu-system-arm -M versatilepb -m 128M -kernel zImage -initrd rootfs -append "root=/dev/ram"
