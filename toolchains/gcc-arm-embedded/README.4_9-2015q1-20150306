@@ -1,0 +1,55 @@
+- when building target code, newlib is selected by default
+  gcc-arm-embedded's newlib-nano is selected by:
+
+	-specs=nano.specs
+
+- make sure you have at least 20GB available
+- e.g. VM: 20GB HDD, 2GB RAM, 3 CPUs
+
+$ sudo zypper -n install \
+	gcc-c++ \
+	autoconf \
+	m4 \
+	automake \
+	libtool \
+	patch \
+	make \
+	makeinfo \
+	flex \
+	bison \
+	termcap \
+	ncurses-devel \
+	mpfr-devel \
+	gmp-devel \
+	mpc-devel \
+	isl-devel \
+	cloog-isl-devel \
+	libexpat-devel \
+	python-devel
+<enter password>
+
+
+$ wget https://launchpad.net/gcc-arm-embedded/4.9/4.9-2015-q1-major/+download/gcc-arm-none-eabi-4_9-2015q1-20140306-src.tar.bz2
+$ bzip2 -d < gcc-arm-none-eabi-4_9-2015q1-20150306-src.tar.bz2 | tar xfv -
+$ cd gcc-arm-none-eabi-4_9-2015q1-20150306/src
+$ find . -name "*tar*" -print | xargs -I% tar -xvf %
+$ cd ..
+$ patch -p0 ../README.4_9-2015p1-20150306
+$ ./build-toolchain.sh --skip_steps=mingw32,manual 2>&1 | tee LOG.toolchain
+
+the results are in the "install-native" folder, so add
+~/gcc-arm-none-eabi-4_9-2015q1-20150306/install-native/bin
+to your PATH to use the freshly-built toolchain or source
+the .env file
+
+--- build-toolchain-ORIG.sh	2015-04-23 17:11:34.037821075 -0400
++++ build-toolchain.sh	2015-04-23 16:21:02.770996612 -0400
+@@ -587,7 +587,7 @@
+         strip_binary strip $bin
+     done
+ 
+-    STRIP_BINARIES=`find $INSTALLDIR_NATIVE/lib/gcc/arm-none-eabi/$GCC_VER/ -maxdepth 1 -name \* -perm +111 -and ! -type d`
++    STRIP_BINARIES=`find $INSTALLDIR_NATIVE/lib/gcc/arm-none-eabi/$GCC_VER/ -maxdepth 1 -name \* -perm /111 -and ! -type d`
+     for bin in $STRIP_BINARIES ; do
+         strip_binary strip $bin
+     done
