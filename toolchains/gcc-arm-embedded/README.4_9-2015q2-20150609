@@ -1,0 +1,53 @@
+--- gcc-arm-none-eabi-4_9-2015q2-20150609.ORIG/build-toolchain.sh	2015-07-09 08:06:25.722378574 -0400
++++ gcc-arm-none-eabi-4_9-2015q2-20150609/build-toolchain.sh		2015-07-09 00:25:29.843937932 -0400
+@@ -591,7 +591,7 @@
+         strip_binary strip $bin
+     done
+ 
+-    STRIP_BINARIES=`find $INSTALLDIR_NATIVE/lib/gcc/arm-none-eabi/$GCC_VER/ -maxdepth 1 -name \* -perm +111 -and ! -type d`
++    STRIP_BINARIES=`find $INSTALLDIR_NATIVE/lib/gcc/arm-none-eabi/$GCC_VER/ -maxdepth 1 -name \* -perm /111 -and ! -type d`
+     for bin in $STRIP_BINARIES ; do
+         strip_binary strip $bin
+     done
+
+------------------------------------------------------------------------------
+- when building target code, newlib is selected by default
+  gcc-arm-embedded's newlib-nano is selected by:
+
+  	-specs=nano.specs
+
+- make sure you have at least 20GB available
+- e.g. VM: 20GB HDD, 2GB RAM, 3 CPUs
+
+$ sudo zypper -n install \
+	autoconf \
+	m4 \
+	automake \
+	libtool \
+	patch \
+	make \
+	makeinfo \
+	flex \
+	bison \
+	termcap \
+	ncurses-devel \
+	mpfr-devel \
+	gmp-devel \
+	mpc-devel \
+	gcc-c++
+	... AND expat-devel (or whatever) (for gcc xml parsing)
+<enter password>
+
+
+$ wget https://launchpadlibrarian.net/209776038/gcc-arm-none-eabi-4_9-2015q2-20150609-src.tar.bz2
+$ bzip2 -d < gcc-arm-none-eabi-4_9-2015q2-20150609-src.tar.bz2 | tar xfv -
+$ cd gcc-arm-none-eabi-4_9-2015q2-20150609/src
+$ find . -name "*tar*" -print | xargs -I% tar -xvf %
+$ cd ..
+$ patch -p1 < ../README.4_9-2015q2-20150609
+$ ./build-toolchain.sh --skip_steps=manual,mingw32 2>&1 | tee LOG.toolchain
+
+the results are in the "install-native" folder, so add
+~/gcc-arm-none-eabi-4_9-2015q2-20150609/install-native/bin
+to your PATH to use the freshly-built toolchain or source
+the .env file
